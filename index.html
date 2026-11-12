@@ -3,1316 +3,572 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guaratuba Limpa | Monitoramento de Resíduos nas Praias</title>
+  <title>GuaraClean | Resíduos nas Praias de Guaratuba</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --azul-profundo: #0a3d62;
-      --azul-mar: #1e6f9f;
-      --azul-claro: #3d9ccc;
-      --verde-agua: #00b4a0;
-      --verde-escuro: #007a6e;
-      --areia: #f5e6c8;
-      --areia-escura: #e8d4a8;
+      --azul: #0a3d62;
+      --azul2: #1e6f9f;
+      --verde: #00b4a0;
+      --verde2: #007a6e;
       --coral: #e85d4c;
-      --amarelo: #f4a261;
-      --branco: #ffffff;
-      --cinza-claro: #f7f9fc;
-      --cinza: #e2e8f0;
+      --cinza: #f7f9fc;
+      --borda: #e2e8f0;
       --texto: #1a2b3c;
-      --texto-suave: #5a6a7a;
-      --sombra: 0 10px 40px rgba(10, 61, 98, 0.12);
-      --sombra-forte: 0 20px 60px rgba(10, 61, 98, 0.18);
-      --raio: 16px;
+      --suave: #5a6a7a;
+      --sombra: 0 8px 30px rgba(10,61,98,.12);
+      --raio: 14px;
     }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Source Sans 3', sans-serif; color: var(--texto); background: var(--cinza); line-height: 1.6; }
+    h1,h2,h3 { font-family: 'Outfit', sans-serif; font-weight: 700; line-height: 1.25; }
+    img { max-width: 100%; display: block; }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Source Sans 3', system-ui, sans-serif;
-      color: var(--texto);
-      background: var(--cinza-claro);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    h1, h2, h3, h4 {
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    /* ========== NAV ========== */
     nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(10, 61, 98, 0.95);
-      backdrop-filter: blur(12px);
-      padding: 0.9rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10,61,98,.96); backdrop-filter: blur(10px);
+      padding: .8rem 1.4rem; display: flex; align-items: center; justify-content: space-between;
     }
+    .logo { display: flex; align-items: center; gap: .5rem; color: #fff; text-decoration: none; font-family: Outfit, sans-serif; font-weight: 700; font-size: 1.25rem; }
+    .logo span { width: 36px; height: 36px; background: linear-gradient(135deg,var(--verde),var(--azul2)); border-radius: 10px; display: grid; place-items: center; }
+    .nav-links { display: flex; gap: 1.2rem; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,.9); text-decoration: none; font-weight: 500; font-size: .93rem; }
+    .nav-links a:hover { color: var(--verde); }
+    .btn-nav { background: var(--verde); color: #fff !important; padding: .45rem 1rem; border-radius: 50px; font-weight: 600; }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      color: white;
-      text-decoration: none;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: 1.25rem;
-    }
-
-    .logo-icon {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, var(--verde-agua), var(--azul-claro));
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: rgba(255,255,255,0.85);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--verde-agua);
-    }
-
-    .btn-nav {
-      background: var(--verde-agua);
-      color: white !important;
-      padding: 0.5rem 1.1rem;
-      border-radius: 50px;
-      font-weight: 600;
-    }
-
-    .btn-nav:hover {
-      background: var(--verde-escuro) !important;
-      color: white !important;
-    }
-
-    /* ========== HERO ========== */
     .hero {
-      min-height: 100vh;
-      background: linear-gradient(160deg, #0a3d62 0%, #1e6f9f 45%, #00b4a0 100%);
-      color: white;
-      display: flex;
-      align-items: center;
-      padding: 7rem 1.5rem 4rem;
-      position: relative;
-      overflow: hidden;
+      min-height: 92vh; display: flex; align-items: center; padding: 6.5rem 1.4rem 3.5rem; color: #fff; position: relative; overflow: hidden;
     }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg, rgba(10,61,98,.9), rgba(30,111,159,.75), rgba(0,180,160,.6)),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Praia_central_de_Guaratuba.JPG/1280px-Praia_central_de_Guaratuba.JPG') center/cover;
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; position: relative; z-index: 2; }
+    .hero h1 { font-size: clamp(2rem,4.5vw,3.1rem); margin: .8rem 0 1rem; }
+    .hero h1 em { color: #7ee8d8; font-style: normal; }
+    .hero p { opacity: .93; margin-bottom: 1.5rem; max-width: 480px; }
+    .stats { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .stat { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 12px; padding: .85rem 1.1rem; min-width: 120px; }
+    .stat strong { display: block; font-size: 1.5rem; font-family: Outfit, sans-serif; color: #7ee8d8; }
+    .stat span { font-size: .8rem; opacity: .85; }
+    .alert { background: rgba(232,93,76,.92); border-radius: var(--raio); padding: 1.2rem; margin-bottom: 1rem; }
+    .alert h3 { font-size: 1.05rem; margin-bottom: .4rem; }
+    .info { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: var(--raio); padding: 1.2rem; }
+    .info h3 { color: #7ee8d8; margin-bottom: .5rem; font-size: 1rem; }
+    .info ul { list-style: none; font-size: .93rem; }
+    .info li { padding: .25rem 0 .25rem 1.2rem; position: relative; }
+    .info li::before { content: '→'; position: absolute; left: 0; color: var(--verde); }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      bottom: -80px;
-      left: -50px;
-      width: 400px;
-      height: 400px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 50%;
-    }
+    section { padding: 3.8rem 1.4rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .sec-title { text-align: center; margin-bottom: 2rem; }
+    .sec-title h2 { font-size: clamp(1.7rem,3.5vw,2.2rem); color: var(--azul); margin-bottom: .5rem; }
+    .sec-title p { color: var(--suave); max-width: 560px; margin: 0 auto; }
 
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: -100px;
-      right: -80px;
-      width: 500px;
-      height: 500px;
-      background: rgba(0,180,160,0.12);
-      border-radius: 50%;
-    }
+    .fotos { background: #fff; }
+    .fotos-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+    .foto { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; position: relative; box-shadow: var(--sombra); }
+    .foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+    .foto:hover img { transform: scale(1.05); }
+    .foto span { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent,rgba(0,0,0,.7)); color: #fff; padding: 1.2rem .9rem .7rem; font-size: .88rem; font-weight: 600; }
 
-    .hero-content {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 3rem;
-      align-items: center;
-      position: relative;
-      z-index: 2;
+    .mapa-sec { background: linear-gradient(180deg,#e8f6f4,#f7f9fc); }
+    .mapa-wrap { border-radius: var(--raio); overflow: hidden; box-shadow: var(--sombra); height: 380px; }
+    .mapa-wrap iframe { width: 100%; height: 100%; border: 0; }
+    .mapa-legenda { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.2rem; justify-content: center; }
+    .mapa-legenda a {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--azul); color: #fff; text-decoration: none;
+      padding: .55rem 1rem; border-radius: 50px; font-size: .88rem; font-weight: 600;
     }
+    .mapa-legenda a:hover { background: var(--azul2); }
 
-    .hero-badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.25);
-      padding: 0.35rem 0.9rem;
-      border-radius: 50px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 1.2rem;
-      backdrop-filter: blur(4px);
-    }
+    .problema { background: #fff; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 1.2rem; }
+    .card { background: var(--cinza); border: 1px solid var(--borda); border-radius: var(--raio); padding: 1.4rem; }
+    .card .ico { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; font-size: 1.3rem; margin-bottom: .8rem; }
+    .card h3 { font-size: 1.08rem; color: var(--azul); margin-bottom: .4rem; }
+    .card p { font-size: .92rem; color: var(--suave); }
 
-    .hero h1 {
-      font-size: clamp(2.2rem, 5vw, 3.4rem);
-      margin-bottom: 1.2rem;
-      letter-spacing: -0.02em;
-    }
+    .quem { background: linear-gradient(180deg,#e8f6f4,#fff); }
+    .usuarios { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 1.1rem; }
+    .user { background: #fff; border-radius: var(--raio); padding: 1.4rem; box-shadow: var(--sombra); text-align: center; border-top: 4px solid var(--verde); }
+    .user .e { font-size: 2rem; margin-bottom: .6rem; }
+    .user h3 { font-size: 1.05rem; color: var(--azul); margin-bottom: .35rem; }
+    .user p { font-size: .88rem; color: var(--suave); }
 
-    .hero h1 span {
-      color: #7ee8d8;
+    .app { background: var(--cinza); }
+    .app-grid { display: grid; grid-template-columns: 320px 1fr; gap: 1.6rem; align-items: start; }
+    .form-box { background: #fff; border-radius: var(--raio); padding: 1.4rem; box-shadow: var(--sombra); position: sticky; top: 80px; }
+    .form-box h3 { font-size: 1.1rem; color: var(--azul); margin-bottom: 1rem; }
+    .fg { margin-bottom: .85rem; }
+    .fg label { display: block; font-weight: 600; font-size: .85rem; margin-bottom: .3rem; }
+    .fg input, .fg select {
+      width: 100%; padding: .65rem .85rem; border: 1.5px solid var(--borda); border-radius: 10px;
+      font-size: .93rem; font-family: inherit; background: #fff;
     }
+    .fg input:focus, .fg select:focus { outline: none; border-color: var(--azul2); box-shadow: 0 0 0 3px rgba(61,156,204,.2); }
+    .btn { width: 100%; padding: .8rem; border: none; border-radius: 11px; font-size: .98rem; font-weight: 600; font-family: Outfit, sans-serif; cursor: pointer; }
+    .btn-p { background: linear-gradient(135deg,var(--verde),var(--verde2)); color: #fff; margin-top: .3rem; }
+    .btn-p:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,180,160,.35); }
+    .btn-s { background: transparent; color: var(--coral); border: 1.5px solid var(--coral); margin-top: .5rem; font-size: .88rem; }
 
-    .hero p {
-      font-size: 1.15rem;
-      opacity: 0.92;
-      margin-bottom: 2rem;
-      max-width: 520px;
-    }
+    .res { display: flex; flex-direction: column; gap: 1.2rem; }
+    .box { background: #fff; border-radius: var(--raio); padding: 1.3rem; box-shadow: var(--sombra); }
+    .box h3 { font-size: 1.08rem; color: var(--azul); margin-bottom: .25rem; }
+    .sub { font-size: .88rem; color: var(--suave); margin-bottom: 1rem; }
+    .chart-w { height: 260px; max-width: 400px; margin: 0 auto; }
+    .insight { background: linear-gradient(135deg,#e8f6f4,#d4f0eb); border-left: 4px solid var(--verde); border-radius: 0 10px 10px 0; padding: .9rem 1rem; margin-top: 1rem; font-size: .92rem; }
+    .insight strong { color: var(--verde2); }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th { background: var(--azul); color: #fff; padding: .65rem .8rem; text-align: left; font-family: Outfit, sans-serif; font-size: .82rem; }
+    th:first-child { border-radius: 8px 0 0 0; } th:last-child { border-radius: 0 8px 0 0; }
+    td { padding: .6rem .8rem; border-bottom: 1px solid var(--borda); }
+    tr:hover td { background: #f0f7fa; }
+    .badge { display: inline-block; padding: .15rem .5rem; border-radius: 50px; font-size: .75rem; font-weight: 600; }
+    .b-p { background: #dbeafe; color: #1e40af; } .b-o { background: #d1fae5; color: #065f46; }
+    .b-b { background: #fef3c7; color: #92400e; } .b-m { background: #e0e7ff; color: #3730a3; }
+    .b-v { background: #fce7f3; color: #9d174d; } .b-x { background: #f3f4f6; color: #374151; }
+    .total { font-size: .88rem; color: var(--suave); margin-top: .7rem; }
 
-    .hero-stats {
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
+    .fontes { background: #fff; }
+    .fonte { background: var(--cinza); border: 1px solid var(--borda); border-radius: var(--raio); padding: 1.2rem; margin-bottom: .9rem; }
+    .fonte h4 { font-size: 1rem; color: var(--azul); margin-bottom: .3rem; }
+    .fonte .m { font-size: .85rem; color: var(--suave); margin-bottom: .4rem; }
+    .fonte a { color: var(--azul2); font-size: .88rem; word-break: break-all; }
 
-    .stat-card {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 14px;
-      padding: 1rem 1.3rem;
-      backdrop-filter: blur(8px);
-      min-width: 140px;
-    }
+    .lim { background: linear-gradient(180deg,#fff5f5,#fff); }
+    .lim-g { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+    .lim-b { background: #fff; border-radius: var(--raio); padding: 1.4rem; box-shadow: var(--sombra); }
+    .lim-b h3 { font-size: 1.08rem; margin-bottom: .8rem; display: flex; align-items: center; gap: .4rem; }
+    .lim-b.a h3 { color: var(--coral); } .lim-b.r h3 { color: var(--verde2); }
+    .lim-b ul { list-style: none; }
+    .lim-b li { padding: .35rem 0 .35rem 1.3rem; position: relative; font-size: .92rem; color: var(--suave); }
+    .lim-b.a li::before { content: '✕'; position: absolute; left: 0; color: var(--coral); font-weight: 700; }
+    .lim-b.r li::before { content: '✓'; position: absolute; left: 0; color: var(--verde); font-weight: 700; }
 
-    .stat-card strong {
-      display: block;
-      font-size: 1.7rem;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      color: #7ee8d8;
-    }
+    .ia { background: var(--azul); color: #fff; }
+    .ia .sec-title h2 { color: #fff; } .ia .sec-title p { color: rgba(255,255,255,.8); }
+    .prompt { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: var(--raio); padding: 1.2rem; font-size: .88rem; line-height: 1.65; white-space: pre-wrap; margin-bottom: 1.2rem; }
+    .corr { background: rgba(0,180,160,.15); border: 1px solid rgba(0,180,160,.3); border-radius: var(--raio); padding: 1.1rem; }
+    .corr h4 { color: #7ee8d8; margin-bottom: .4rem; }
 
-    .stat-card span {
-      font-size: 0.85rem;
-      opacity: 0.85;
-    }
+    footer { background: #06253d; color: rgba(255,255,255,.7); padding: 2rem 1.4rem; text-align: center; font-size: .88rem; }
+    footer strong { color: #fff; }
 
-    .hero-visual {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--verde2); color: #fff;
+      padding: .8rem 1.2rem; border-radius: 10px; box-shadow: var(--sombra); font-weight: 500;
+      transform: translateY(100px); opacity: 0; transition: .3s; z-index: 200;
     }
-
-    .alert-box {
-      background: rgba(232, 93, 76, 0.9);
-      border-radius: var(--raio);
-      padding: 1.4rem;
-      box-shadow: var(--sombra-forte);
-    }
-
-    .alert-box h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .alert-box p {
-      font-size: 0.95rem;
-      opacity: 0.95;
-      margin: 0;
-    }
-
-    .info-box {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: var(--raio);
-      padding: 1.4rem;
-      backdrop-filter: blur(8px);
-    }
-
-    .info-box h3 {
-      font-size: 1.05rem;
-      margin-bottom: 0.6rem;
-      color: #7ee8d8;
-    }
-
-    .info-box ul {
-      list-style: none;
-      font-size: 0.95rem;
-    }
-
-    .info-box li {
-      padding: 0.3rem 0;
-      padding-left: 1.3rem;
-      position: relative;
-    }
-
-    .info-box li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: var(--verde-agua);
-    }
-
-    /* ========== SECTIONS ========== */
-    section {
-      padding: 4.5rem 1.5rem;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 2.8rem;
-    }
-
-    .section-header h2 {
-      font-size: clamp(1.8rem, 4vw, 2.4rem);
-      color: var(--azul-profundo);
-      margin-bottom: 0.7rem;
-    }
-
-    .section-header p {
-      color: var(--texto-suave);
-      max-width: 620px;
-      margin: 0 auto;
-      font-size: 1.05rem;
-    }
-
-    /* ========== PROBLEMA ========== */
-    .problema {
-      background: white;
-    }
-
-    .problema-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .problema-card {
-      background: var(--cinza-claro);
-      border-radius: var(--raio);
-      padding: 1.6rem;
-      border: 1px solid var(--cinza);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .problema-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--sombra);
-    }
-
-    .problema-card .icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .problema-card h3 {
-      font-size: 1.15rem;
-      margin-bottom: 0.5rem;
-      color: var(--azul-profundo);
-    }
-
-    .problema-card p {
-      font-size: 0.95rem;
-      color: var(--texto-suave);
-    }
-
-    /* ========== QUEM USA ========== */
-    .quem-usa {
-      background: linear-gradient(180deg, #e8f6f4 0%, white 100%);
-    }
-
-    .usuarios {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.3rem;
-    }
-
-    .usuario-card {
-      background: white;
-      border-radius: var(--raio);
-      padding: 1.5rem;
-      box-shadow: var(--sombra);
-      text-align: center;
-      border-top: 4px solid var(--verde-agua);
-    }
-
-    .usuario-card .emoji {
-      font-size: 2.2rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .usuario-card h3 {
-      font-size: 1.1rem;
-      color: var(--azul-profundo);
-      margin-bottom: 0.4rem;
-    }
-
-    .usuario-card p {
-      font-size: 0.9rem;
-      color: var(--texto-suave);
-    }
-
-    /* ========== APP SECTION ========== */
-    .app-section {
-      background: var(--cinza-claro);
-    }
-
-    .app-layout {
-      display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
+    .toast.on { transform: translateY(0); opacity: 1; }
 
     @media (max-width: 900px) {
-      .app-layout {
-        grid-template-columns: 1fr;
-      }
-      .hero-content {
-        grid-template-columns: 1fr;
-      }
-      .nav-links {
-        display: none;
-      }
+      .hero-inner, .app-grid, .lim-g { grid-template-columns: 1fr; }
+      .fotos-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .form-box { position: static; }
     }
-
-    .form-card {
-      background: white;
-      border-radius: var(--raio);
-      padding: 1.6rem;
-      box-shadow: var(--sombra);
-      position: sticky;
-      top: 90px;
-    }
-
-    .form-card h3 {
-      font-size: 1.2rem;
-      color: var(--azul-profundo);
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.88rem;
-      margin-bottom: 0.35rem;
-      color: var(--texto);
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 0.7rem 0.9rem;
-      border: 1.5px solid var(--cinza);
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      background: white;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: var(--azul-claro);
-      box-shadow: 0 0 0 3px rgba(61, 156, 204, 0.2);
-    }
-
-    .btn-primary {
-      width: 100%;
-      padding: 0.85rem;
-      background: linear-gradient(135deg, var(--verde-agua), var(--verde-escuro));
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      font-family: 'Outfit', sans-serif;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      margin-top: 0.5rem;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 180, 160, 0.35);
-    }
-
-    .btn-secondary {
-      width: 100%;
-      padding: 0.7rem;
-      background: transparent;
-      color: var(--coral);
-      border: 1.5px solid var(--coral);
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 0.6rem;
-      transition: background 0.2s;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(232, 93, 76, 0.08);
-    }
-
-    .results-area {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .chart-card, .table-card {
-      background: white;
-      border-radius: var(--raio);
-      padding: 1.5rem;
-      box-shadow: var(--sombra);
-    }
-
-    .chart-card h3, .table-card h3 {
-      font-size: 1.15rem;
-      color: var(--azul-profundo);
-      margin-bottom: 0.3rem;
-    }
-
-    .chart-subtitle {
-      font-size: 0.9rem;
-      color: var(--texto-suave);
-      margin-bottom: 1.2rem;
-    }
-
-    .chart-wrapper {
-      position: relative;
-      height: 280px;
-      max-width: 420px;
-      margin: 0 auto;
-    }
-
-    .insight-box {
-      background: linear-gradient(135deg, #e8f6f4, #d4f0eb);
-      border-left: 4px solid var(--verde-agua);
-      border-radius: 0 12px 12px 0;
-      padding: 1rem 1.2rem;
-      margin-top: 1.2rem;
-      font-size: 0.95rem;
-    }
-
-    .insight-box strong {
-      color: var(--verde-escuro);
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    th {
-      background: var(--azul-profundo);
-      color: white;
-      padding: 0.75rem 0.9rem;
-      text-align: left;
-      font-weight: 600;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.85rem;
-    }
-
-    th:first-child { border-radius: 8px 0 0 0; }
-    th:last-child { border-radius: 0 8px 0 0; }
-
-    td {
-      padding: 0.7rem 0.9rem;
-      border-bottom: 1px solid var(--cinza);
-    }
-
-    tr:hover td {
-      background: #f0f7fa;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 50px;
-      font-size: 0.78rem;
-      font-weight: 600;
-    }
-
-    .badge-plastico { background: #dbeafe; color: #1e40af; }
-    .badge-organico { background: #d1fae5; color: #065f46; }
-    .badge-bituca { background: #fef3c7; color: #92400e; }
-    .badge-metal { background: #e0e7ff; color: #3730a3; }
-    .badge-vidro { background: #fce7f3; color: #9d174d; }
-    .badge-outros { background: #f3f4f6; color: #374151; }
-
-    .total-registros {
-      font-size: 0.9rem;
-      color: var(--texto-suave);
-      margin-top: 0.8rem;
-    }
-
-    /* ========== FONTES ========== */
-    .fontes {
-      background: white;
-    }
-
-    .fonte-card {
-      background: var(--cinza-claro);
-      border-radius: var(--raio);
-      padding: 1.4rem;
-      margin-bottom: 1rem;
-      border: 1px solid var(--cinza);
-    }
-
-    .fonte-card h4 {
-      font-size: 1.05rem;
-      color: var(--azul-profundo);
-      margin-bottom: 0.4rem;
-    }
-
-    .fonte-card .meta {
-      font-size: 0.88rem;
-      color: var(--texto-suave);
-      margin-bottom: 0.5rem;
-    }
-
-    .fonte-card a {
-      color: var(--azul-mar);
-      font-size: 0.9rem;
-      word-break: break-all;
-    }
-
-    /* ========== LIMITAÇÕES ========== */
-    .limitacoes {
-      background: linear-gradient(180deg, #fff5f5 0%, white 100%);
-    }
-
-    .lim-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-
-    @media (max-width: 700px) {
-      .lim-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .lim-box {
-      background: white;
-      border-radius: var(--raio);
-      padding: 1.6rem;
-      box-shadow: var(--sombra);
-    }
-
-    .lim-box h3 {
-      font-size: 1.15rem;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .lim-box.atual h3 { color: var(--coral); }
-    .lim-box.real h3 { color: var(--verde-escuro); }
-
-    .lim-box ul {
-      list-style: none;
-    }
-
-    .lim-box li {
-      padding: 0.45rem 0;
-      padding-left: 1.4rem;
-      position: relative;
-      font-size: 0.95rem;
-      color: var(--texto-suave);
-    }
-
-    .lim-box.atual li::before {
-      content: '✕';
-      position: absolute;
-      left: 0;
-      color: var(--coral);
-      font-weight: 700;
-    }
-
-    .lim-box.real li::before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      color: var(--verde-agua);
-      font-weight: 700;
-    }
-
-    /* ========== IA ========== */
-    .ia-section {
-      background: var(--azul-profundo);
-      color: white;
-    }
-
-    .ia-section .section-header h2 {
-      color: white;
-    }
-
-    .ia-section .section-header p {
-      color: rgba(255,255,255,0.8);
-    }
-
-    .prompt-box {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: var(--raio);
-      padding: 1.5rem;
-      font-family: 'Source Sans 3', monospace;
-      font-size: 0.9rem;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      margin-bottom: 1.5rem;
-    }
-
-    .correcao-box {
-      background: rgba(0,180,160,0.15);
-      border: 1px solid rgba(0,180,160,0.3);
-      border-radius: var(--raio);
-      padding: 1.3rem;
-    }
-
-    .correcao-box h4 {
-      color: #7ee8d8;
-      margin-bottom: 0.5rem;
-    }
-
-    /* ========== FOOTER ========== */
-    footer {
-      background: #06253d;
-      color: rgba(255,255,255,0.7);
-      padding: 2.5rem 1.5rem;
-      text-align: center;
-      font-size: 0.9rem;
-    }
-
-    footer strong {
-      color: white;
-    }
-
-    /* ========== TOAST ========== */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: var(--verde-escuro);
-      color: white;
-      padding: 0.9rem 1.4rem;
-      border-radius: 12px;
-      box-shadow: var(--sombra-forte);
-      font-weight: 500;
-      transform: translateY(120px);
-      opacity: 0;
-      transition: all 0.3s ease;
-      z-index: 2000;
-    }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    @media (max-width: 500px) { .fotos-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="logo">
-      <div class="logo-icon">🌊</div>
-      Guaratuba Limpa
-    </a>
-    <ul class="nav-links">
-      <li><a href="#problema">O Problema</a></li>
-      <li><a href="#quem">Quem usa</a></li>
-      <li><a href="#monitor">Monitoramento</a></li>
-      <li><a href="#fontes">Fontes</a></li>
-      <li><a href="#monitor" class="btn-nav">Registrar agora</a></li>
-    </ul>
-  </nav>
+<nav>
+  <a href="#" class="logo"><span>🌊</span> GuaraClean</a>
+  <ul class="nav-links">
+    <li><a href="#fotos">Fotos</a></li>
+    <li><a href="#mapa">Mapa</a></li>
+    <li><a href="#problema">Problema</a></li>
+    <li><a href="#monitor">Monitorar</a></li>
+    <li><a href="#monitor" class="btn-nav">Registrar</a></li>
+  </ul>
+</nav>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero-content">
-      <div>
-        <div class="hero-badge">🌍 Conscientização + Dados para ação</div>
-        <h1>O lixo nas praias de <span>Guaratuba</span> não é só um número</h1>
-        <p>
-          Em finais de semana, feriados e temporada de verão, toneladas de resíduos
-          se acumulam na areia e na baía. Banhistas deixam plásticos, latas, restos
-          de comida e bitucas. Este site mostra o problema e oferece uma ferramenta
-          simples para monitorar e priorizar ações.
-        </p>
-        <div class="hero-stats">
-          <div class="stat-card">
-            <strong>7,1 t</strong>
-            <span>retiradas em 1 mutirão (2026)</span>
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div>
+      <div style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);padding:.3rem .9rem;border-radius:50px;font-size:.84rem;margin-bottom:.9rem;">🌍 Conscientização + Dados</div>
+      <h1>Guara<em>Clean</em> — menos lixo, mais praia</h1>
+      <p>Toneladas de resíduos se acumulam nas praias e na baía de Guaratuba em finais de semana e temporada. Este site mostra o problema, a localização das praias e permite monitorar o que mais polui.</p>
+      <div class="stats">
+        <div class="stat"><strong>7,1 t</strong><span>1 mutirão (2026)</span></div>
+        <div class="stat"><strong>~8 t/dia</strong><span>média no litoral</span></div>
+        <div class="stat"><strong>+90 t</strong><span>desde 2007</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="alert">
+        <h3>⚠️ Alerta ambiental</h3>
+        <p>O 18º Mutirão retirou <strong>7,1 toneladas</strong> da Baía de Guaratuba. O plástico continua sendo o vilão nº 1.</p>
+      </div>
+      <div class="info">
+        <h3>O que o GuaraClean faz</h3>
+        <ul>
+          <li>Mostra fotos reais das praias</li>
+          <li>Mapa com a localização</li>
+          <li>Registro de resíduos + gráfico</li>
+          <li>Ajuda a priorizar coleta e campanhas</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="fotos" id="fotos">
+  <div class="container">
+    <div class="sec-title">
+      <h2>Guaratuba de verdade</h2>
+      <p>Fotos reais das praias e da baía que precisamos proteger.</p>
+    </div>
+    <div class="fotos-grid">
+      <div class="foto">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Praia_central_de_Guaratuba.JPG/800px-Praia_central_de_Guaratuba.JPG" alt="Praia Central" loading="lazy">
+        <span>Praia Central — alta temporada</span>
+      </div>
+      <div class="foto">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Baia_de_Guaratuba.JPG" alt="Baía de Guaratuba" loading="lazy">
+        <span>Baía de Guaratuba</span>
+      </div>
+      <div class="foto">
+        <img src="https://images.pexels.com/photos/36562575/pexels-photo-36562575.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Ondas" loading="lazy">
+        <span>Ondas em Guaratuba</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mapa-sec" id="mapa">
+  <div class="container">
+    <div class="sec-title">
+      <h2>Onde ficam as praias</h2>
+      <p>Mapa de Guaratuba (PR). Use os botões para abrir a rota no Google Maps.</p>
+    </div>
+    <div class="mapa-wrap">
+      <iframe
+        src="https://www.openstreetmap.org/export/embed.html?bbox=-48.62%2C-25.92%2C-48.50%2C-25.85&amp;layer=mapnik&amp;marker=-25.881%2C-48.567"
+        loading="lazy"
+        title="Mapa de Guaratuba - Praia Central"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <div class="mapa-legenda">
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Praia+Central,+Guaratuba+-+PR" target="_blank" rel="noopener">📍 Praia Central</a>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Brejatuba,+Guaratuba+-+PR" target="_blank" rel="noopener">📍 Brejatuba</a>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Caieiras,+Guaratuba+-+PR" target="_blank" rel="noopener">📍 Caieiras</a>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Nereidas,+Guaratuba+-+PR" target="_blank" rel="noopener">📍 Nereidas</a>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Baía+de+Guaratuba,+Guaratuba+-+PR" target="_blank" rel="noopener">📍 Baía</a>
+    </div>
+  </div>
+</section>
+
+<section class="problema" id="problema">
+  <div class="container">
+    <div class="sec-title">
+      <h2>O problema em Guaratuba</h2>
+      <p>Acúmulo de resíduos nas praias e na baía, principalmente em alta temporada. Afeta turismo, meio ambiente e a imagem da cidade.</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="ico" style="background:#dbeafe;">🏖️</div>
+        <h3>Praias e baía afetadas</h3>
+        <p>Banhistas deixam plásticos, latas, restos de comida e bitucas. Mutirões retiram toneladas. Sanepar + Prefeitura registram volumes altos.</p>
+      </div>
+      <div class="card">
+        <div class="ico" style="background:#fef3c7;">📈</div>
+        <h3>Picos em temporada</h3>
+        <p>Finais de semana, feriados e verão concentram o maior volume. Média de cerca de 8 toneladas por dia no litoral em períodos críticos.</p>
+      </div>
+      <div class="card">
+        <div class="ico" style="background:#d1fae5;">🎯</div>
+        <h3>Decisão com dados</h3>
+        <p>Identificar tipos e trechos críticos permite priorizar coleta, lixeiras, campanhas educativas e mutirões dirigidos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quem" id="quem">
+  <div class="container">
+    <div class="sec-title">
+      <h2>Quem pode usar</h2>
+      <p>Ferramenta para quem precisa decidir onde e como agir.</p>
+    </div>
+    <div class="usuarios">
+      <div class="user">
+        <div class="e">🏛️</div>
+        <h3>Secretarias de Meio Ambiente</h3>
+        <p>Equipes de limpeza priorizam trechos e tipos de resíduo.</p>
+      </div>
+      <div class="user">
+        <div class="e">🌱</div>
+        <h3>Instituto Guaju e voluntários</h3>
+        <p>Mutirões mais direcionados e acompanhamento de resultados.</p>
+      </div>
+      <div class="user">
+        <div class="e">🏫</div>
+        <h3>Escolas e educação ambiental</h3>
+        <p>Registro e gráfico para conscientizar alunos e comunidade.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="app" id="monitor">
+  <div class="container">
+    <div class="sec-title">
+      <h2>Monitoramento de Resíduos</h2>
+      <p>Cadastre o que encontrou. Dados ficam no navegador. O gráfico mostra o tipo que mais polui.</p>
+    </div>
+    <div class="app-grid">
+      <div class="form-box">
+        <h3>📝 Novo registro</h3>
+        <form id="formResiduo">
+          <div class="fg">
+            <label for="local">Local</label>
+            <select id="local" required>
+              <option value="">Selecione...</option>
+              <option>Praia Central</option>
+              <option>Brejatuba</option>
+              <option>Caieiras</option>
+              <option>Nereidas</option>
+              <option>Coroados</option>
+              <option>Baía (mangue/ilha)</option>
+              <option>Outro</option>
+            </select>
           </div>
-          <div class="stat-card">
-            <strong>~8 t/dia</strong>
-            <span>média de limpeza no litoral</span>
+          <div class="fg">
+            <label for="tipo">Tipo de resíduo</label>
+            <select id="tipo" required>
+              <option value="">Selecione...</option>
+              <option>Plástico</option>
+              <option>Orgânico</option>
+              <option>Bituca</option>
+              <option>Metal</option>
+              <option>Vidro</option>
+              <option>Outros</option>
+            </select>
           </div>
-          <div class="stat-card">
-            <strong>+90 t</strong>
-            <span>acumuladas desde 2007</span>
+          <div class="fg">
+            <label for="quantidade">Quantidade</label>
+            <input type="number" id="quantidade" min="1" placeholder="Ex: 12" required>
           </div>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="alert-box">
-          <h3>⚠️ Alerta ambiental</h3>
-          <p>
-            O 18º Mutirão de Limpeza da Baía de Guaratuba retirou <strong>7,1 toneladas</strong>
-            de resíduos — volume superior ao do ano anterior. O plástico continua sendo o vilão nº 1.
-          </p>
-        </div>
-        <div class="info-box">
-          <h3>O que este site faz</h3>
-          <ul>
-            <li>Conscientiza sobre o volume real de lixo</li>
-            <li>Permite registrar resíduos encontrados</li>
-            <li>Mostra qual tipo predomina (gráfico)</li>
-            <li>Ajuda a decidir onde priorizar coleta e campanhas</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- PROBLEMA -->
-  <section class="problema" id="problema">
-    <div class="container">
-      <div class="section-header">
-        <h2>O problema em Guaratuba</h2>
-        <p>
-          Acúmulo frequente de resíduos nas praias e na baía, especialmente em períodos de alta visitação.
-          Impacta turismo, meio ambiente e a imagem da cidade.
-        </p>
-      </div>
-      <div class="problema-grid">
-        <div class="problema-card">
-          <div class="icon" style="background:#dbeafe;">🏖️</div>
-          <h3>Praias e baía afetadas</h3>
-          <p>
-            Banhistas deixam plásticos, latas, restos de comida e bitucas na areia.
-            Mutirões retiram toneladas. A limpeza oficial (Sanepar + Prefeitura) registra volumes altos.
-          </p>
-        </div>
-        <div class="problema-card">
-          <div class="icon" style="background:#fef3c7;">📈</div>
-          <h3>Picos em temporada</h3>
-          <p>
-            Finais de semana, feriados e verão concentram o maior volume.
-            A média de recolhimento no litoral chega a cerca de 8 toneladas por dia em períodos críticos.
-          </p>
-        </div>
-        <div class="problema-card">
-          <div class="icon" style="background:#d1fae5;">🎯</div>
-          <h3>Decisão baseada em dados</h3>
-          <p>
-            Identificar tipos de resíduo mais comuns e trechos mais críticos permite priorizar
-            coleta, aumentar lixeiras, fazer campanhas educativas e mutirões dirigidos.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- QUEM USA -->
-  <section class="quem-usa" id="quem">
-    <div class="container">
-      <div class="section-header">
-        <h2>Quem pode usar este monitoramento</h2>
-        <p>Ferramenta pensada para quem precisa decidir onde e como agir.</p>
-      </div>
-      <div class="usuarios">
-        <div class="usuario-card">
-          <div class="emoji">🏛️</div>
-          <h3>Secretarias de Meio Ambiente e Urbanismo</h3>
-          <p>Equipes de limpeza usam os dados para priorizar trechos e tipos de resíduo.</p>
-        </div>
-        <div class="usuario-card">
-          <div class="emoji">🌱</div>
-          <h3>Instituto Guaju e voluntários</h3>
-          <p>Organização de mutirões mais direcionados e acompanhamento de resultados.</p>
-        </div>
-        <div class="usuario-card">
-          <div class="emoji">🏫</div>
-          <h3>Escolas e educação ambiental</h3>
-          <p>Projetos educativos usam o registro e o gráfico para conscientizar alunos e comunidade.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MONITORAMENTO / APP -->
-  <section class="app-section" id="monitor">
-    <div class="container">
-      <div class="section-header">
-        <h2>Monitoramento de Resíduos</h2>
-        <p>
-          Cadastre o que você encontrou. Os dados ficam no seu navegador (localStorage).
-          O gráfico mostra imediatamente qual tipo de resíduo predomina.
-        </p>
-      </div>
-
-      <div class="app-layout">
-        <!-- FORMULÁRIO -->
-        <div class="form-card">
-          <h3>📝 Novo registro</h3>
-          <form id="formResiduo">
-            <div class="form-group">
-              <label for="local">Local</label>
-              <select id="local" required>
-                <option value="">Selecione...</option>
-                <option value="Praia Central">Praia Central</option>
-                <option value="Brejatuba">Brejatuba</option>
-                <option value="Caieiras">Caieiras</option>
-                <option value="Ilha do Mel">Ilha do Mel</option>
-                <option value="Nereidas">Nereidas</option>
-                <option value="Coroados">Coroados</option>
-                <option value="Baía (mangue/ilha)">Baía (mangue/ilha)</option>
-                <option value="Outro">Outro</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="tipo">Tipo de resíduo</label>
-              <select id="tipo" required>
-                <option value="">Selecione...</option>
-                <option value="Plástico">Plástico</option>
-                <option value="Orgânico">Orgânico / restos de comida</option>
-                <option value="Bituca">Bituca de cigarro</option>
-                <option value="Metal">Metal (latas etc.)</option>
-                <option value="Vidro">Vidro</option>
-                <option value="Outros">Outros</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="quantidade">Quantidade (itens ou kg aproximado)</label>
-              <input type="number" id="quantidade" min="1" step="1" placeholder="Ex: 12" required>
-            </div>
-            <div class="form-group">
-              <label for="periodo">Período</label>
-              <select id="periodo" required>
-                <option value="">Selecione...</option>
-                <option value="Manhã">Manhã</option>
-                <option value="Tarde">Tarde</option>
-                <option value="Noite">Noite</option>
-                <option value="Alta temporada">Alta temporada</option>
-                <option value="Baixa temporada">Baixa temporada</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="data">Data</label>
-              <input type="date" id="data" required>
-            </div>
-            <button type="submit" class="btn-primary">Salvar registro</button>
-            <button type="button" class="btn-secondary" id="btnLimpar">Limpar todos os dados</button>
-          </form>
-        </div>
-
-        <!-- RESULTADOS -->
-        <div class="results-area">
-          <div class="chart-card">
-            <h3>📊 Quantidade total por tipo de resíduo</h3>
-            <p class="chart-subtitle">Plástico costuma dominar. Use os dados para decidir onde colocar mais lixeiras e campanhas.</p>
-            <div class="chart-wrapper">
-              <canvas id="graficoResiduos"></canvas>
-            </div>
-            <div class="insight-box" id="insight">
-              <strong>Insight:</strong> Carregando dados...
-            </div>
+          <div class="fg">
+            <label for="periodo">Período</label>
+            <select id="periodo" required>
+              <option value="">Selecione...</option>
+              <option>Manhã</option>
+              <option>Tarde</option>
+              <option>Noite</option>
+              <option>Alta temporada</option>
+              <option>Baixa temporada</option>
+            </select>
           </div>
-
-          <div class="table-card">
-            <h3>📋 Registros cadastrados</h3>
-            <div class="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Local</th>
-                    <th>Tipo</th>
-                    <th>Qtd</th>
-                    <th>Período</th>
-                  </tr>
-                </thead>
-                <tbody id="tabelaBody">
-                </tbody>
-              </table>
-            </div>
-            <p class="total-registros" id="totalRegistros">0 registros</p>
+          <div class="fg">
+            <label for="data">Data</label>
+            <input type="date" id="data" required>
           </div>
+          <button type="submit" class="btn btn-p">Salvar registro</button>
+          <button type="button" class="btn btn-s" id="btnLimpar">Limpar dados</button>
+        </form>
+      </div>
+      <div class="res">
+        <div class="box">
+          <h3>📊 Por tipo de resíduo</h3>
+          <p class="sub">Plástico costuma dominar. Use para decidir lixeiras e campanhas.</p>
+          <div class="chart-w"><canvas id="grafico"></canvas></div>
+          <div class="insight" id="insight"><strong>Insight:</strong> Carregando...</div>
+        </div>
+        <div class="box">
+          <h3>📋 Registros</h3>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Data</th><th>Local</th><th>Tipo</th><th>Qtd</th><th>Período</th></tr></thead>
+              <tbody id="tabela"></tbody>
+            </table>
+          </div>
+          <p class="total" id="total">0 registros</p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- FONTES -->
-  <section class="fontes" id="fontes">
-    <div class="container">
-      <div class="section-header">
-        <h2>Fontes consultadas</h2>
-        <p>Dados reais que motivaram este projeto de conscientização e monitoramento.</p>
-      </div>
-
-      <div class="fonte-card">
-        <h4>1. 18º Mutirão de Limpeza retira 7,1 toneladas de resíduos da Baía de Guaratuba e acende alerta ambiental</h4>
-        <p class="meta">Responsável: Correio do Litoral (com informações da Prefeitura e Instituto Guaju)</p>
-        <a href="https://correiodolitoral.com/18o-mutirao-de-limpeza-retira-71-toneladas-de-residuos-da-baia-de-guaratuba-e-acende-alerta-ambiental/101710" target="_blank" rel="noopener">
-          correiodolitoral.com/18o-mutirao-de-limpeza-retira-71-toneladas-de-residuos-da-baia-de-guaratuba-e-acende-alerta-ambiental/101710
-        </a>
-      </div>
-
-      <div class="fonte-card">
-        <h4>2. Coletores enfrentam cenário de lixo espalhado nas areias da praia de Guaratuba</h4>
-        <p class="meta">Responsável: Grupo Litorânea de Comunicação</p>
-        <a href="https://litoranea.fm/coletores-enfrentam-cenario-de-lixo-espalhado-nas-areias-da-praia-de-guaratuba" target="_blank" rel="noopener">
-          litoranea.fm/coletores-enfrentam-cenario-de-lixo-espalhado-nas-areias-da-praia-de-guaratuba
-        </a>
-      </div>
-
-      <p style="margin-top:1.2rem; font-size:0.95rem; color:var(--texto-suave);">
-        Outras referências úteis: matérias da Sanepar sobre médias de toneladas/dia no litoral paranaense
-        e os mutirões históricos do Instituto Guaju (mais de 90 toneladas removidas desde 2007).
-      </p>
+<section class="fontes" id="fontes">
+  <div class="container">
+    <div class="sec-title">
+      <h2>Fontes consultadas</h2>
+      <p>Dados reais que motivaram o projeto.</p>
     </div>
-  </section>
+    <div class="fonte">
+      <h4>1. 18º Mutirão retira 7,1 toneladas da Baía de Guaratuba</h4>
+      <p class="m">Correio do Litoral (Prefeitura + Instituto Guaju)</p>
+      <a href="https://correiodolitoral.com/18o-mutirao-de-limpeza-retira-71-toneladas-de-residuos-da-baia-de-guaratuba-e-acende-alerta-ambiental/101710" target="_blank" rel="noopener">correiodolitoral.com/.../18o-mutirao...</a>
+    </div>
+    <div class="fonte">
+      <h4>2. Coletores enfrentam lixo espalhado nas areias de Guaratuba</h4>
+      <p class="m">Grupo Litorânea de Comunicação</p>
+      <a href="https://litoranea.fm/coletores-enfrentam-cenario-de-lixo-espalhado-nas-areias-da-praia-de-guaratuba" target="_blank" rel="noopener">litoranea.fm/coletores-enfrentam...</a>
+    </div>
+  </div>
+</section>
 
-  <!-- LIMITAÇÕES -->
-  <section class="limitacoes" id="limitacoes">
-    <div class="container">
-      <div class="section-header">
-        <h2>Limitações deste simulador × Uso real</h2>
-        <p>Este é um protótipo educacional. Entenda o que muda quando o sistema for usado de verdade.</p>
+<section class="lim" id="limitacoes">
+  <div class="container">
+    <div class="sec-title">
+      <h2>Limitações × Uso real</h2>
+      <p>Protótipo educacional. O que muda no sistema real.</p>
+    </div>
+    <div class="lim-g">
+      <div class="lim-b a">
+        <h3>⚠️ Limitações atuais</h3>
+        <ul>
+          <li>Dados fictícios (só 10 registros de exemplo)</li>
+          <li>Sem GPS real do celular nem fotos do usuário</li>
+          <li>Não conecta com Prefeitura/Sanepar</li>
+          <li>Cadastro sem validação</li>
+          <li>Dados só no navegador (localStorage)</li>
+        </ul>
       </div>
-      <div class="lim-grid">
-        <div class="lim-box atual">
-          <h3>⚠️ Limitações atuais</h3>
-          <ul>
-            <li>Dados fictícios e em quantidade pequena (só 10 registros de exemplo)</li>
-            <li>Não tem geolocalização real nem fotos</li>
-            <li>Não se conecta com a limpeza oficial da Prefeitura/Sanepar</li>
-            <li>Qualquer pessoa pode cadastrar sem validação</li>
-            <li>Dados ficam apenas no navegador local (localStorage)</li>
-          </ul>
-        </div>
-        <div class="lim-box real">
-          <h3>✓ O que mudaria no uso real</h3>
-          <ul>
-            <li>Integração com aplicativo da Prefeitura ou Instituto Guaju</li>
-            <li>Validação por voluntários ou fiscais</li>
-            <li>Fotos obrigatórias e geolocalização precisa</li>
-            <li>Dashboard público com dados atualizados em tempo quase real</li>
-            <li>Relatórios para secretarias e planejamento de mutirões</li>
-          </ul>
-        </div>
+      <div class="lim-b r">
+        <h3>✓ Uso real</h3>
+        <ul>
+          <li>Integração com app da Prefeitura ou Instituto Guaju</li>
+          <li>Validação por voluntários/fiscais</li>
+          <li>Fotos + GPS do dispositivo</li>
+          <li>Dashboard público atualizado</li>
+          <li>Relatórios para planejamento de mutirões</li>
+        </ul>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- COMO A IA AJUDOU -->
-  <section class="ia-section" id="ia">
-    <div class="container">
-      <div class="section-header">
-        <h2>Como a IA ajudou neste projeto</h2>
-        <p>Exemplo de uso de inteligência artificial no desenvolvimento do aplicativo e do material.</p>
-      </div>
-
-      <p style="margin-bottom:1rem; opacity:0.9;">A IA pode ajudar a:</p>
-      <ul style="margin-bottom:1.5rem; padding-left:1.2rem; opacity:0.9;">
-        <li>Gerar o código do aplicativo (HTML + JavaScript + gráfico)</li>
-        <li>Sugerir campos e textos de conscientização</li>
-        <li>Criar os 10 registros fictícios</li>
-        <li>Montar o roteiro da apresentação</li>
-      </ul>
-
-      <h4 style="margin-bottom:0.6rem; color:#7ee8d8;">Exemplo de prompt usado:</h4>
-      <div class="prompt-box">Crie um aplicativo web simples em HTML, CSS e JavaScript para monitorar resíduos nas praias de Guaratuba.
-Campos: Local, Tipo de resíduo (plástico, vidro, metal, orgânico, bituca, outros), Quantidade, Período, Data.
-Preciso de: formulário de cadastro, tabela com os registros e um gráfico de barras mostrando a quantidade total por tipo de resíduo.
-Use Chart.js. Os dados devem ficar salvos no localStorage do navegador.</div>
-
-      <div class="correcao-box">
-        <h4>Correção realizada pela equipe (exemplo)</h4>
-        <p>
-          A IA gerou o gráfico só com porcentagem. A equipe pediu para mostrar também o número absoluto
-          de itens e adicionou uma legenda mais clara + cores diferentes para cada tipo de resíduo.
-          O site final combina conscientização + ferramenta de monitoramento em uma única página.
-        </p>
-      </div>
+<section class="ia" id="ia">
+  <div class="container">
+    <div class="sec-title">
+      <h2>Como a IA ajudou</h2>
+      <p>Exemplo de uso no desenvolvimento do site e do material.</p>
     </div>
-  </section>
+    <p style="opacity:.9;margin-bottom:.8rem;">A IA pode: gerar o código (HTML/JS/gráfico), sugerir campos e textos, criar registros fictícios e montar o roteiro da apresentação.</p>
+    <h4 style="color:#7ee8d8;margin-bottom:.5rem;">Exemplo de prompt:</h4>
+    <div class="prompt">Crie um aplicativo web em HTML, CSS e JavaScript para monitorar resíduos nas praias de Guaratuba.
+Campos: Local, Tipo (plástico, vidro, metal, orgânico, bituca, outros), Quantidade, Período, Data.
+Formulário, tabela e gráfico com Chart.js. Dados no localStorage.</div>
+    <div class="corr">
+      <h4>Correção da equipe</h4>
+      <p>A IA gerou o gráfico só com %. A equipe pediu números absolutos, legenda clara e cores por tipo. Depois o site ganhou fotos, mapa e o nome GuaraClean.</p>
+    </div>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>
-      <strong>Guaratuba Limpa</strong> — Protótipo educacional de conscientização e monitoramento de resíduos nas praias.<br>
-      Dados de exemplo são fictícios. Fontes reais citadas na seção correspondente.<br>
-      Feito para apoiar decisões de limpeza, campanhas e mutirões em Guaratuba, Paraná.
-    </p>
-  </footer>
+<footer>
+  <p><strong>GuaraClean</strong> — Protótipo educacional de conscientização e monitoramento de resíduos em Guaratuba, PR.<br>
+  Dados de exemplo fictícios. Fotos: Wikimedia Commons e Pexels.</p>
+</footer>
 
-  <div class="toast" id="toast">Registro salvo!</div>
+<div class="toast" id="toast">Registro salvo!</div>
 
-  <script>
-    // ========== DADOS INICIAIS FICTÍCIOS (10 registros) ==========
-    const registrosIniciais = [
-      { local: "Praia Central", tipo: "Plástico", quantidade: 28, periodo: "Tarde", data: "2026-01-12" },
-      { local: "Brejatuba", tipo: "Orgânico", quantidade: 15, periodo: "Alta temporada", data: "2026-01-15" },
-      { local: "Praia Central", tipo: "Bituca", quantidade: 42, periodo: "Noite", data: "2026-01-18" },
-      { local: "Caieiras", tipo: "Plástico", quantidade: 19, periodo: "Manhã", data: "2026-01-20" },
-      { local: "Brejatuba", tipo: "Metal", quantidade: 8, periodo: "Tarde", data: "2026-01-22" },
-      { local: "Praia Central", tipo: "Plástico", quantidade: 35, periodo: "Alta temporada", data: "2026-02-01" },
-      { local: "Nereidas", tipo: "Orgânico", quantidade: 12, periodo: "Tarde", data: "2026-02-03" },
-      { local: "Ilha do Mel", tipo: "Vidro", quantidade: 6, periodo: "Manhã", data: "2026-02-05" },
-      { local: "Brejatuba", tipo: "Plástico", quantidade: 22, periodo: "Alta temporada", data: "2026-02-08" },
-      { local: "Praia Central", tipo: "Outros", quantidade: 9, periodo: "Noite", data: "2026-02-10" }
-    ];
+<script>
+const iniciais = [
+  { local:"Praia Central", tipo:"Plástico", quantidade:28, periodo:"Tarde", data:"2026-01-12" },
+  { local:"Brejatuba", tipo:"Orgânico", quantidade:15, periodo:"Alta temporada", data:"2026-01-15" },
+  { local:"Praia Central", tipo:"Bituca", quantidade:42, periodo:"Noite", data:"2026-01-18" },
+  { local:"Caieiras", tipo:"Plástico", quantidade:19, periodo:"Manhã", data:"2026-01-20" },
+  { local:"Brejatuba", tipo:"Metal", quantidade:8, periodo:"Tarde", data:"2026-01-22" },
+  { local:"Praia Central", tipo:"Plástico", quantidade:35, periodo:"Alta temporada", data:"2026-02-01" },
+  { local:"Nereidas", tipo:"Orgânico", quantidade:12, periodo:"Tarde", data:"2026-02-03" },
+  { local:"Caieiras", tipo:"Vidro", quantidade:6, periodo:"Manhã", data:"2026-02-05" },
+  { local:"Brejatuba", tipo:"Plástico", quantidade:22, periodo:"Alta temporada", data:"2026-02-08" },
+  { local:"Praia Central", tipo:"Outros", quantidade:9, periodo:"Noite", data:"2026-02-10" }
+];
+const cores = { Plástico:"#3b82f6", Orgânico:"#10b981", Bituca:"#f59e0b", Metal:"#6366f1", Vidro:"#ec4899", Outros:"#6b7280" };
+const badges = { Plástico:"b-p", Orgânico:"b-o", Bituca:"b-b", Metal:"b-m", Vidro:"b-v", Outros:"b-x" };
+let chart = null;
 
-    // Cores por tipo
-    const coresTipo = {
-      "Plástico": "#3b82f6",
-      "Orgânico": "#10b981",
-      "Bituca": "#f59e0b",
-      "Metal": "#6366f1",
-      "Vidro": "#ec4899",
-      "Outros": "#6b7280"
-    };
+function carregar() {
+  const s = localStorage.getItem("guaraclean_v2");
+  if (s) return JSON.parse(s);
+  localStorage.setItem("guaraclean_v2", JSON.stringify(iniciais));
+  return [...iniciais];
+}
+function salvar(d) { localStorage.setItem("guaraclean_v2", JSON.stringify(d)); }
 
-    const badgeClass = {
-      "Plástico": "badge-plastico",
-      "Orgânico": "badge-organico",
-      "Bituca": "badge-bituca",
-      "Metal": "badge-metal",
-      "Vidro": "badge-vidro",
-      "Outros": "badge-outros"
-    };
+function tabela(d) {
+  const tb = document.getElementById("tabela");
+  tb.innerHTML = "";
+  [...d].sort((a,b) => b.data.localeCompare(a.data)).forEach(r => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${r.data.split("-").reverse().join("/")}</td><td>${r.local}</td>
+      <td><span class="badge ${badges[r.tipo]||"b-x"}">${r.tipo}</span></td>
+      <td><strong>${r.quantidade}</strong></td><td>${r.periodo}</td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById("total").textContent = d.length + " registro" + (d.length !== 1 ? "s" : "");
+}
 
-    let chart = null;
-
-    // ========== LOCAL STORAGE ==========
-    function carregarDados() {
-      const salvos = localStorage.getItem("guaratuba_residuos");
-      if (salvos) {
-        return JSON.parse(salvos);
+function grafico(d) {
+  const tot = {};
+  d.forEach(r => { tot[r.tipo] = (tot[r.tipo] || 0) + Number(r.quantidade); });
+  const labels = Object.keys(tot), vals = Object.values(tot);
+  const geral = vals.reduce((a,b) => a+b, 0);
+  let insight = "Ainda sem dados.";
+  if (labels.length) {
+    const i = vals.indexOf(Math.max(...vals));
+    const pct = ((vals[i]/geral)*100).toFixed(0);
+    const locs = {};
+    d.forEach(r => { locs[r.local] = (locs[r.local]||0) + Number(r.quantidade); });
+    const top = Object.entries(locs).sort((a,b)=>b[1]-a[1])[0];
+    insight = `<strong>Insight:</strong> <strong>${labels[i]}</strong> ≈ <strong>${pct}%</strong> (${vals[i]} itens). Local líder: <strong>${top[0]}</strong>. Priorize lixeiras e campanhas contra ${labels[i].toLowerCase()}.`;
+  }
+  document.getElementById("insight").innerHTML = insight;
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("grafico"), {
+    type: "doughnut",
+    data: { labels, datasets: [{ data: vals, backgroundColor: labels.map(l => cores[l]||"#6b7280"), borderWidth: 3, borderColor: "#fff", hoverOffset: 6 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: "55%",
+      plugins: {
+        legend: { position: "bottom", labels: { padding: 14, usePointStyle: true, font: { size: 12 } } },
+        tooltip: { callbacks: { label: c => { const p = geral ? ((c.raw/geral)*100).toFixed(1) : 0; return ` ${c.label}: ${c.raw} (${p}%)`; } } }
       }
-      // Primeira visita: grava os 10 fictícios
-      localStorage.setItem("guaratuba_residuos", JSON.stringify(registrosIniciais));
-      return [...registrosIniciais];
     }
+  });
+}
 
-    function salvarDados(dados) {
-      localStorage.setItem("guaratuba_residuos", JSON.stringify(dados));
-    }
+function toast(m) {
+  const t = document.getElementById("toast");
+  t.textContent = m; t.classList.add("on");
+  setTimeout(() => t.classList.remove("on"), 2200);
+}
 
-    // ========== RENDER TABELA ==========
-    function renderTabela(dados) {
-      const tbody = document.getElementById("tabelaBody");
-      tbody.innerHTML = "";
+document.getElementById("formResiduo").addEventListener("submit", e => {
+  e.preventDefault();
+  const n = {
+    local: local.value, tipo: tipo.value, quantidade: Number(quantidade.value),
+    periodo: periodo.value, data: data.value
+  };
+  const d = carregar(); d.push(n); salvar(d);
+  tabela(d); grafico(d);
+  e.target.reset(); data.valueAsDate = new Date();
+  toast("Registro salvo!");
+});
 
-      // Mais recentes primeiro
-      const ordenados = [...dados].sort((a, b) => b.data.localeCompare(a.data));
+document.getElementById("btnLimpar").onclick = () => {
+  if (confirm("Apagar todos e restaurar os 10 exemplos?")) {
+    localStorage.removeItem("guaraclean_v2");
+    const d = carregar(); tabela(d); grafico(d);
+    toast("Dados restaurados.");
+  }
+};
 
-      ordenados.forEach(r => {
-        const tr = document.createElement("tr");
-        const dataFormatada = r.data.split("-").reverse().join("/");
-        tr.innerHTML = `
-          <td>${dataFormatada}</td>
-          <td>${r.local}</td>
-          <td><span class="badge ${badgeClass[r.tipo] || "badge-outros"}">${r.tipo}</span></td>
-          <td><strong>${r.quantidade}</strong></td>
-          <td>${r.periodo}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      document.getElementById("totalRegistros").textContent =
-        `${dados.length} registro${dados.length !== 1 ? "s" : ""}`;
-    }
-
-    // ========== GRÁFICO ==========
-    function atualizarGrafico(dados) {
-      const totais = {};
-      dados.forEach(r => {
-        totais[r.tipo] = (totais[r.tipo] || 0) + Number(r.quantidade);
-      });
-
-      const labels = Object.keys(totais);
-      const valores = Object.values(totais);
-      const cores = labels.map(l => coresTipo[l] || "#6b7280");
-
-      const totalGeral = valores.reduce((a, b) => a + b, 0);
-
-      // Insight
-      let insightText = "Ainda não há dados suficientes.";
-      if (labels.length > 0) {
-        const maxIdx = valores.indexOf(Math.max(...valores));
-        const tipoMaior = labels[maxIdx];
-        const qtdMaior = valores[maxIdx];
-        const pct = ((qtdMaior / totalGeral) * 100).toFixed(0);
-
-        const locaisCount = {};
-        dados.forEach(r => {
-          locaisCount[r.local] = (locaisCount[r.local] || 0) + Number(r.quantidade);
-        });
-        const localMais = Object.entries(locaisCount).sort((a, b) => b[1] - a[1])[0];
-
-        insightText = `<strong>Insight:</strong> <strong>${tipoMaior}</strong> representa cerca de <strong>${pct}%</strong> do total (${qtdMaior} itens).
-          Local com mais registros: <strong>${localMais[0]}</strong>.
-          Recomendação: priorizar lixeiras e campanhas contra <strong>${tipoMaior.toLowerCase()}</strong>
-          e reforçar coleta em ${localMais[0]}.`;
-      }
-      document.getElementById("insight").innerHTML = insightText;
-
-      const ctx = document.getElementById("graficoResiduos").getContext("2d");
-
-      if (chart) {
-        chart.destroy();
-      }
-
-      chart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-          labels: labels,
-          datasets: [{
-            data: valores,
-            backgroundColor: cores,
-            borderWidth: 3,
-            borderColor: "#ffffff",
-            hoverOffset: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: "bottom",
-              labels: {
-                padding: 16,
-                usePointStyle: true,
-                font: { size: 13, family: "'Source Sans 3', sans-serif" }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const val = context.raw;
-                  const pct = totalGeral ? ((val / totalGeral) * 100).toFixed(1) : 0;
-                  return ` ${context.label}: ${val} itens (${pct}%)`;
-                }
-              }
-            }
-          },
-          cutout: "55%"
-        }
-      });
-    }
-
-    // ========== TOAST ==========
-    function mostrarToast(msg) {
-      const t = document.getElementById("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(() => t.classList.remove("show"), 2500);
-    }
-
-    // ========== EVENTOS ==========
-    document.getElementById("formResiduo").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const novo = {
-        local: document.getElementById("local").value,
-        tipo: document.getElementById("tipo").value,
-        quantidade: Number(document.getElementById("quantidade").value),
-        periodo: document.getElementById("periodo").value,
-        data: document.getElementById("data").value
-      };
-
-      const dados = carregarDados();
-      dados.push(novo);
-      salvarDados(dados);
-
-      renderTabela(dados);
-      atualizarGrafico(dados);
-      this.reset();
-      // Define data de hoje novamente
-      document.getElementById("data").valueAsDate = new Date();
-      mostrarToast("Registro salvo com sucesso!");
-    });
-
-    document.getElementById("btnLimpar").addEventListener("click", function() {
-      if (confirm("Tem certeza que deseja apagar TODOS os registros? Os 10 exemplos iniciais serão restaurados.")) {
-        localStorage.removeItem("guaratuba_residuos");
-        const dados = carregarDados();
-        renderTabela(dados);
-        atualizarGrafico(dados);
-        mostrarToast("Dados restaurados para os 10 exemplos.");
-      }
-    });
-
-    // ========== INICIALIZAÇÃO ==========
-    document.addEventListener("DOMContentLoaded", function() {
-      // Data de hoje no formulário
-      document.getElementById("data").valueAsDate = new Date();
-
-      const dados = carregarDados();
-      renderTabela(dados);
-      atualizarGrafico(dados);
-    });
-  </script>
+document.addEventListener("DOMContentLoaded", () => {
+  data.valueAsDate = new Date();
+  const d = carregar(); tabela(d); grafico(d);
+});
+</script>
 </body>
 </html>
